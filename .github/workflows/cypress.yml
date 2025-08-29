@@ -61,4 +61,3 @@ jobs:
         with:
           install: false            # ya hicimos npm ci
           browser: ${{ matrix.browser }}
-          command: npm run cucumber #
