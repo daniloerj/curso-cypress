@@ -1,0 +1,5 @@
+- [x] Proyecto inicializado con estructura Cypress, TypeScript, Cucumber y Page Object Model.
+- [ ] Personalizar el proyecto según los requisitos del usuario.
+- [ ] Instalar dependencias y compilar el proyecto.
+- [ ] Crear y ejecutar tareas de prueba.
+- [ ] Documentar y versionar el proyecto.
