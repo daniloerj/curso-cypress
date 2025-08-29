@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label 'windows' }
     environment {
         NODEJS_HOME = tool name: 'NodeJS_20', type: 'nodejs'
         PATH = "${NODEJS_HOME}/bin:${env.PATH}"
