@@ -1,28 +1,49 @@
+// cypress.config.ts (ESM/TS)
 import { defineConfig } from "cypress";
 import createBundler from "@bahmutov/cypress-esbuild-preprocessor";
 import { addCucumberPreprocessorPlugin } from "@badeball/cypress-cucumber-preprocessor";
-// 👇 En ESM/TS, este import debe ser *default*
-import createEsbuildPlugin from "@badeball/cypress-cucumber-preprocessor/esbuild";
+// 👇 OJO: import nombrado, no default
+import { createEsbuildPlugin } from "@badeball/cypress-cucumber-preprocessor/esbuild";
+import { allureCypress } from "allure-cypress/reporter";
 
 export default defineConfig({
   e2e: {
-    baseUrl: "https://practicetestautomation.com",
     specPattern: "**/*.feature",
-    supportFile: "cypress/support/e2e.ts", // cámbialo a false si no usarás support
+    supportFile: "cypress/support/e2e.ts",
+    baseUrl: "https://practicetestautomation.com",
+
+    screenshotsFolder: "cypress/screenshots",
+    videosFolder: "cypress/videos",
+    video: true,
+    videoCompression: 32,
+    screenshotOnRunFailure: true,
+    trashAssetsBeforeRuns: true,
+    retries: { runMode: 2, openMode: 0 },
+    viewportWidth: 1366,
+    viewportHeight: 768,
+    defaultCommandTimeout: 10000,
+    pageLoadTimeout: 60000,
+
     async setupNodeEvents(on, config) {
-      // 1) registra el plugin de cucumber (es async)
       await addCucumberPreprocessorPlugin(on, config);
 
-      // 2) registra el bundler con el plugin de cucumber para esbuild
-      on(
-        "file:preprocessor",
-        createBundler({
-          plugins: [createEsbuildPlugin(config)],
-        })
-      );
+      on("file:preprocessor", createBundler({
+        plugins: [createEsbuildPlugin(config)],
+      }));
 
-      // 3) SIEMPRE devolver config
+      allureCypress(on, config, { resultsDir: "allure-results" });
+
+      // Permite overrides por CI (Actions/Jenkins)
+      const envBaseUrl = process.env.CYPRESS_baseUrl || process.env.BASE_URL || config.baseUrl;
+      if (envBaseUrl) config.baseUrl = envBaseUrl;
+
       return config;
     },
   },
+
+  reporter: "junit",
+  reporterOptions: {
+    mochaFile: "cypress/reports/junit/results-[hash].xml",
+    toConsole: true
+  }
 });

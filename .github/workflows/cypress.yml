@@ -1,27 +1,64 @@
-name: Cypress Tests
+name: E2E - Cypress + Allure
+
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Sobrescribir baseUrl (CYPRESS_baseUrl)"
+        required: false
+        default: "https://practicetestautomation.com"
+      tags:
+        description: "Filtro de tags Cucumber (ej: @smoke and not @wip)"
+        required: false
+        default: "not @ignore"
+
+concurrency:
+  group: cypress-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write        # para deploy de GitHub Pages
+  id-token: write     # requerido por deploy-pages
+  checks: write       # para resumen JUnit en PRs
+  pull-requests: write
+
 jobs:
-  cypress-run:
-    runs-on: windows-latest
+  cypress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, electron]
+
+    env:
+      # Permite overrides por dispatch o usa default
+      CYPRESS_baseUrl: ${{ inputs.base_url || 'https://practicetestautomation.com' }}
+      CYPRESS_TAGS: ${{ inputs.tags || 'not @ignore' }}
+      # Si usas variables adicionales (tokens, etc.), decláralas en repo secrets.
+
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Node.js
+
+      - name: Setup Node 20 + cache
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
-      - name: Install dependencies
-        run: npm install
-      - name: Run Cypress tests
-        run: npm run cucumber
-      - name: Upload Cypress HTML report
-        uses: actions/upload-artifact@v4
+          node-version: "20.x"
+          cache: "npm"
+
+      - name: Install (CI)
+        run: npm ci
+
+      # Acción oficial: instala binario de Cypress (cacheado), corre en headless, y recoge artefactos
+      - name: Run Cypress (${{ matrix.browser }})
+        uses: cypress-io/github-action@v6
         with:
-          name: cypress-report
-          path: cypress/reports/html
+          install: false            # ya hicimos npm ci
+          browser: ${{ matrix.browser }}
+          command: npm run cucumber #

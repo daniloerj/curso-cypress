@@ -1,12 +1,32 @@
 {
   "name": "cy-course-ia-test",
   "version": "1.0.0",
+  "private": true,
   "description": "Automatización de pruebas web con Cypress, TypeScript, Cucumber y Page Object Model.",
+  "type": "module",
   "main": "index.js",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
-    "test:ui": "cypress open",
-    "test:headless": "cypress run",
-    "cucumber": "cypress run --reporter mochawesome --reporter-options reportDir=cypress/reports,overwrite=false,html=true,json=true --spec 'cypress/e2e/features/*.feature'"
+    "cy:open": "cypress open",
+    "cucumber": "cypress run",
+    "cucumber:chrome": "cypress run --browser chrome --headless",
+    "cucumber:electron": "cypress run --browser electron --headless",
+
+    "clean": "rimraf allure-results allure-report cypress/screenshots cypress/videos",
+
+    "allure:serve": "powershell -NoProfile -Command \"& \\\"$PWD\\node_modules\\.bin\\allure\\\" serve \\\"allure-results\\\"\"",
+
+    "allure:generate:ci": "npx allure generate \"allure-results\" --clean -o \"allure-report\"",
+    "allure:open:ci": "npx allure open \"allure-report\"",
+
+    "allure:generate:win": "powershell -NoProfile -Command \"& \\\"$PWD\\node_modules\\.bin\\allure\\\" generate \\\"allure-results\\\" --clean -o \\\"allure-report\\\"\"",
+    "allure:open:win": "powershell -NoProfile -Command \"& \\\"$PWD\\node_modules\\.bin\\allure\\\" open \\\"allure-report\\\"\"",
+
+    "test": "npm run cucumber",
+    "test:allure:ci": "npm run cucumber || true && npm run allure:generate:ci",
+    "test:allure:win": "powershell -NoProfile -Command \"& { npm run cucumber; if ($LASTEXITCODE -ne 0) { Write-Host 'Tests failed but generating Allure anyway'; } }\" && npm run allure:generate:win && npm run allure:open:win"
   },
   "author": "Danilo Efrain",
   "license": "MIT",
@@ -14,8 +34,12 @@
     "@badeball/cypress-cucumber-preprocessor": "^23.0.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.5",
     "@cucumber/cucumber": "^9.2.0",
+    "allure-commandline": "^2.34.1",
+    "allure-cypress": "^3.3.3",
     "cypress": "^13.6.3",
+    "cypress-on-fix": "^1.1.0",
     "esbuild": "^0.25.9",
+    "rimraf": "^5.0.5",
     "typescript": "^5.4.5"
   }
 }
