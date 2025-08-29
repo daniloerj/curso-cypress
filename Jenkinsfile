@@ -17,7 +17,7 @@ pipeline {
         }
         stage('Run Cypress Tests') {
             steps {
-                bat 'npm run test'
+                bat 'npm run cucumber'
             }
         }
         stage('Archive Report') {
