@@ -1,7 +1,7 @@
 pipeline {
   agent any
 
-  options { timestamps() }
+  options { ansiColor('xterm') timestamps() }
 
   parameters {
     string(name: 'BASE_URL', defaultValue: 'https://practicetestautomation.com', description: 'CYPRESS_baseUrl')
