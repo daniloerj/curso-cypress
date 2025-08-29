@@ -1,4 +1,4 @@
-import { Given, When, Then } from "@cucumber/cucumber";
+import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 import { LoginPage } from "../pages/LoginPage";
 
 const loginPage = new LoginPage();
@@ -39,8 +39,12 @@ Then('I should see a logout button', () => {
   loginPage.getLogoutButton().should('exist');
 });
 
-Then('I should see an error message for invalid credentials', () => {
+Then('I should see an error message for invalid username', () => {
   loginPage.getErrorMessage().should('contain.text', 'Your username is invalid!');
+});
+
+Then('I should see an error message for invalid password', () => {
+  loginPage.getErrorMessage().should('contain.text', 'Your password is invalid!');
 });
 
 Then('I should see a validation message for required fields', () => {

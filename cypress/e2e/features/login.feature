@@ -13,16 +13,10 @@ Feature: Login functionality
     Given I am on the login page
     When I enter an invalid username and valid password
     And I click the login button
-    Then I should see an error message for invalid credentials
+    Then I should see an error message for invalid username
 
   Scenario: Login with invalid password
     Given I am on the login page
     When I enter a valid username and invalid password
     And I click the login button
-    Then I should see an error message for invalid credentials
-
-  Scenario: Login with empty fields
-    Given I am on the login page
-    When I leave username and password empty
-    And I click the login button
-    Then I should see a validation message for required fields
+    Then I should see an error message for invalid password

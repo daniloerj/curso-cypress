@@ -1,0 +1,27 @@
+# Node
+node_modules/
+dist/
+
+# Cypress
+cypress/screenshots/
+cypress/videos/
+cypress/reports/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Others
+coverage/

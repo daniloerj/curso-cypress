@@ -16,11 +16,11 @@ export class LoginPage {
   }
 
   getErrorMessage() {
-    return cy.get('.error')
+    return cy.get('#error')
   }
 
   getLogoutButton() {
-    return cy.get('a[href="/practice-test-login/"]')
+    return cy.get('.wp-block-button__link')
   }
 
   getSecureArea() {
