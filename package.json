@@ -6,7 +6,7 @@
   "scripts": {
     "test:ui": "cypress open",
     "test:headless": "cypress run",
-    "cucumber": "cypress run --spec 'cypress/e2e/features/*.feature'"
+    "cucumber": "cypress run --reporter mochawesome --reporter-options reportDir=cypress/reports,overwrite=false,html=true,json=true --spec 'cypress/e2e/features/*.feature'"
   },
   "author": "Danilo Efrain",
   "license": "MIT",
